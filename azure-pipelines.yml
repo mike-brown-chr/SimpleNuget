@@ -1,0 +1,27 @@
+variables:
+  buildConfiguration: 'Release'
+
+trigger:
+- development
+- master
+
+jobs:
+- job: Build
+  pool:
+    name: 'OnPrem Agents - Prod'
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      projects: '**/*.csproj'
+      arguments: '--configuration $(buildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: pack
+      packDirectory: '$(Build.ArtifactStagingDirectory)/tmp'
+#  - task: PublishPipelineArtifact@1
+#    inputs:
+#      targetPath: '$(Build.ArtifactStagingDirectory)/tmp'
+#      artifact: 'buildArtifacts'
+#      publishLocation: 'pipeline'
